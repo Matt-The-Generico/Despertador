@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Despertador</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(120deg, #1f1c2c, #928dab);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      transition: background 1s ease;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      animation: fadeIn 1.5s ease;
+    }
+
+    #clock {
+      font-size: 4rem;
+      margin: 20px 0;
+      animation: pulse 2s infinite;
+    }
+
+    input[type="time"] {
+      font-size: 1.2rem;
+      padding: 10px;
+      border: none;
+      border-radius: 10px;
+      background-color: #ffffff22;
+      color: white;
+      backdrop-filter: blur(5px);
+      outline: none;
+      transition: background 0.3s ease;
+    }
+
+    input[type="time"]:hover {
+      background-color: #ffffff33;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    button {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 20px;
+      background-color: #ffffff33;
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #ffffff55;
+      transform: scale(1.05);
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(-20px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.05); opacity: 0.8; }
+    }
+  </style>
+</head>
+<body>
+  <h1>Despertador</h1>
+  <div id="clock">--:--:--</div>
+  <input type="time" id="alarmTime">
+  
+  <div class="button-group">
+    <button onclick="setAlarm()">Definir Alarme</button>
+    <button onclick="stopAlarm()">Desligar Alarme</button>
+  </div>
+
+  <audio id="alarmSound" src="https://files.catbox.moe/734ba6.mp3" preload="auto" loop></audio>
+
+  <script>
+    const clock = document.getElementById("clock");
+    const alarmSound = document.getElementById("alarmSound");
+    let alarmTime = null;
+    let alarmTriggered = false;
+
+    function updateClock() {
+      const now = new Date();
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const seconds = String(now.getSeconds()).padStart(2, '0');
+      clock.textContent = `${hours}:${minutes}:${seconds}`;
+
+      if (alarmTime && !alarmTriggered) {
+        const currentTime = `${hours}:${minutes}`;
+        if (currentTime === alarmTime) {
+          alarmSound.play();
+          alarmTriggered = true;
+        }
+      }
+    }
+
+    function setAlarm() {
+      const input = document.getElementById("alarmTime").value;
+      if (input) {
+        alarmTime = input;
+        alarmTriggered = false;
+        alert(`Alarme definido para ${alarmTime}`);
+      }
+    }
+
+    function stopAlarm() {
+      alarmSound.pause();
+      alarmSound.currentTime = 0;
+      alarmTime = null;
+      alarmTriggered = false;
+      alert("🔕 Alarme desligado.");
+    }
+
+    setInterval(updateClock, 1000);
+    updateClock();
+  </script>
+</body>
+</html>
